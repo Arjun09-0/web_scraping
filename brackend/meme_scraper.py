@@ -1,3 +1,4 @@
+
 import praw
 import time
 
@@ -50,3 +51,21 @@ def get_memes_by_genre(genre, page=1, limit=10):
     if not paged_memes:
         paged_memes = [{'title': 'No memes found', 'url': ''}]
     return paged_memes
+
+
+
+def save_memes_to_db(db, Meme, genre, memes):
+    for meme in memes:
+        if meme['title'] != 'No memes found':
+            exists = Meme.query.filter_by(title=meme['title'], url=meme['url'], genre=genre).first()
+            if not exists:
+                db.session.add(Meme(genre=genre, title=meme['title'], url=meme['url']))
+    db.session.commit()
+
+def get_memes_from_db(db, Meme, genre, page=1, limit=10):
+    query = Meme.query.filter_by(genre=genre)
+    memes = query.offset((page-1)*limit).limit(limit).all()
+    result = [{'title': m.title, 'url': m.url} for m in memes]
+    if not result:
+        result = [{'title': 'No memes found', 'url': ''}]
+    return result
