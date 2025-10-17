@@ -14,6 +14,8 @@ const genres = [
   { value: 'anime', label: 'Anime' },
 ];
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 function App() {
   const [genre, setGenre] = useState('all');
   const [memes, setMemes] = useState([]);
@@ -26,7 +28,7 @@ function App() {
   }, [genre]);
 
   const fetchMemes = (pageNum) => {
-    fetch(`http://localhost:5000/memes?genre=${genre}&page=${pageNum}&limit=${memesPerPage}`)
+    fetch(`${API_URL}/memes?genre=${genre}&page=${pageNum}&limit=${memesPerPage}`)
       .then(res => res.json())
       .then(data => setMemes(data));
   };
